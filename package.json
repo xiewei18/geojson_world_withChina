@@ -1,0 +1,20 @@
+{
+    "name": "@xiewei18/geojson_world_withChina",
+    "version": "2.1.2",
+    "description": "全球国家级行政边界&中国分层次行政区边界。Wordwide country-level geojson dataset along with Hierarchical administrative boundary within China.",
+    "keywords": ["map", "countries", "geo", "geojson", "gis", "echarts", "chinese", "zh-cn"],
+    "main": "data/geojson/sr_4/admin_world_country.geojson",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/xiewei18/geojson_world_withChina.git"
+    },
+    "author": "Surbowl",
+    "license": "Unlicense",
+    "bugs": {
+      "url": "https://github.com/xiewei18/geojson_world_withChina/issues"
+    },
+    "homepage": "https://github.com/xiewei18/geojson_world_withChina#readme"
+  }
