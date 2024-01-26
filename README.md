@@ -6,7 +6,7 @@ Worldwide country-level geojson dataset along with Hierarchical administrative b
 
 本项目是为了为中国区域及相关学术研究提供方便可用的统一行政边界信息（包括嵌套中国国内行政边界的世界地图）。
 
-This project aims to provide a convenient and usable unified administrative boundary information for the China region and related academic research (including a world map with nested Chinese domestic administrative boundaries).
+This project aims to provide a convenient and unified administrative boundary data for the China related visualization.
 
 本项目是 [CTAMap](https://www.ctamap.org) 项目的一部分。
 
@@ -41,13 +41,7 @@ The data can be easily interacted with programming languages such as R or Python
 | iso_a2     | string     | ISO 2-letter code | ISO 2字母代码 |
 | iso_a3     | string     | ISO 3-letter code | ISO 3字母代码 |
 | iso_n3     | string     | ISO 3-digit code | ISO 3数字代码 |
-| geometry   | object     | Geometry information, including type and coordinates | 几何信息，包含类型和坐标 |
-
-## 更新频率 Update Frequency
-
-数据将根据源数据的更新情况进行更新，具体更新频率请参考源数据仓库。
-
-The data will be updated according to the update situation of the source data. For the specific update frequency, please refer to the source data repository.
+| geometry   | object     | Geometry (Polygons) | 空间边界多边形 |
 
 ## 致谢及参考资料 Aknowledgement & References
 
