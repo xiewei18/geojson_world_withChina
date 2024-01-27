@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GeoJSON Visualization</title>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+        #country-list {
+            margin-top: 20px;
+        }
+        #country-list input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="country-list">
+        <input type="text" id="filter-input" placeholder="Filter countries">
+        <ul id="country-names"></ul>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Load GeoJSON data
+        fetch('https://raw.githubusercontent.com/xiewei18/geojson_world_withChina/main/data/geojson/sr_4/admin_world_country.geojson')
+            .then(response => response.json())
+            .then(data => {
+                // Create map
+                const map = L.map('map').setView([0, 0], 2);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+                    maxZoom: 18,
+                }).addTo(map);
+
+                // Create country layer
+                const countryLayer = L.geoJSON(data, {
+                    onEachFeature: onEachFeature,
+                }).addTo(map);
+
+                // Highlight feature on mouseover
+                function highlightFeature(e) {
+                    const layer = e.target;
+                    layer.setStyle({
+                        weight: 2,
+                        color: 'white',
+                        dashArray: '',
+                        fillOpacity: 0.7
+                    });
+                    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                        layer.bringToFront();
+                    }
+                }
+
+                // Reset highlight on mouseout
+                function resetHighlight(e) {
+                    countryLayer.resetStyle(e.target);
+                }
+
+                // Zoom to feature on click
+                function zoomToFeature(e) {
+                    map.fitBounds(e.target.getBounds());
+                    const properties = e.target.feature.properties;
+                    // Display additional information
+                    const info = document.getElementById('info');
+                    info.innerHTML = `
+                        <h3>${properties.name}</h3>
+                        <p>ID: ${properties.OBJECTID}</p>
+                        <p>Short name in English: ${properties.name}</p>
+                        <p>Full name in English: ${properties.name_full}</p>
+                        <p>SOC code: ${properties.SOC}</p>
+                        <p>Short name in Chinese: ${properties.name_chn}</p>
+                        <p>Full name in Chinese: ${properties.name_chn_full}</p>
+                        <p>ISO 2-letter code: ${properties.iso_a2}</p>
+                        <p>ISO 3-letter code: ${properties.iso_a3}</p>
+                        <p>ISO 3-digit code: ${properties.iso_n3}</p>
+                    `;
+                }
+
+                // Add event listeners to each feature
+                function onEachFeature(feature, layer) {
+                    layer.on({
+                        mouseover: highlightFeature,
+                        mouseout: resetHighlight,
+                        click: zoomToFeature
+                    });
+                }
+
+                // Filter countries based on input
+                const filterInput = document.getElementById('filter-input');
+                const countryNames = document.getElementById('country-names');
+                filterInput.addEventListener('input', () => {
+                    const filterValue = filterInput.value.toLowerCase();
+                    const filteredCountries = data.features.filter(feature => {
+                        const countryName = feature.properties.name.toLowerCase();
+                        return countryName.includes(filterValue);
+                    });
+                    countryNames.innerHTML = '';
+                    filteredCountries.forEach(feature => {
+                        const countryName = feature.properties.name;
+                        const li = document.createElement('li');
+                        li.textContent = countryName;
+                        li.addEventListener('click', () => {
+                            zoomToFeature({ target: feature });
+                        });
+                        countryNames.appendChild(li);
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
