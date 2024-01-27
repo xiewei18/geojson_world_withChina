@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body{
+            text-align: center;
+        }
+        table {
+            margin: auto;
+            text-align: left;
+        }
+        footer{
+            padding: 2.5em;
+        }
+        #chart-container{
+            height: 520px;
+        }
+    </style>
+</head>
+<body>
+    
+    <h2>Map</h2>
+    <div id="chart-container"></div>
+
+    <h2>Table</h2>
+    <div id="table-container"></div>
+
+    <footer>
+       <a href="https://github.com/xiewei18/geojson_world_withChina">Github: xiewei18/geojson_world_withChina</a>
+    </footer>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+    <script type="module">
+        var chartDom = document.getElementById("chart-container")
+        var tableDom = document.getElementById("table-container")
+
+        // load word geo json zh data
+        fetch('https://raw.githubusercontent.com/xiewei18/geojson_world_withChina/dev/data/geojson/simple/sr3/admin_world_country.geojson')
+            .then(response => response.json())
+            .then(worldGeoJsonZh => {
+                console.log(worldGeoJsonZh)
+
+                // init chart
+                var myChart = echarts.init(chartDom);
+                echarts.registerMap('WorldZh', worldGeoJsonZh);
+                // echarts map options
+                var option = {
+                    tooltip: {
+                        trigger: 'item',
+                        showDelay: 0,
+                        transitionDuration: 0.2
+                    },
+                    series: [
+                        {
+                            name: 'Demo',
+                            type: 'map',
+                            roam: true,
+                            map: 'WorldZh',
+                            nameProperty: 'name',
+                            emphasis: {
+                                label: {
+                                    show: true
+                                }
+                            },
+                            data: [ ]
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+
+                // init table
+                var props = worldGeoJsonZh.features.map(f => f.properties);
+                var table = convertArrayToHtmlTable(props);
+                tableDom.appendChild(table);
+            });
+
+        // function to convert JSON data to HTML table
+        function convertArrayToHtmlTable(arr) {
+            let table = document.createElement("table");
+            let cols = Object.keys(arr[0]);
+            let thead = document.createElement("thead");
+            let tr = document.createElement("tr");
+            cols.forEach((item) => {
+            let th = document.createElement("th");
+                th.innerText = item;
+                tr.appendChild(th);
+            });
+            thead.appendChild(tr);
+            table.append(tr)
+            arr.forEach((item) => {
+                let tr = document.createElement("tr");
+                let vals = Object.values(item);
+                vals.forEach((elem) => {
+                    let td = document.createElement("td");
+                    td.innerText = elem;
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+            return table;
+        }
+    </script>
+</body>
+</html>
